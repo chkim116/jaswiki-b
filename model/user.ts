@@ -2,10 +2,14 @@ import mongoose from "mongoose";
 
 const UserScheme = new mongoose.Schema({
     userId: String,
-    post: [
+    password: String,
+    email: String,
+    contribute: Number,
+    level: Number,
+    docs: [
         {
-            type: String,
-            regDate: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "docs",
         },
     ],
 });

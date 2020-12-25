@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import morgan from "morgan";
 import "./db";
-
+import docsRouter from "./router/docsRouter";
 import userRouter from "./router/userRouter";
 
 class App {
@@ -19,7 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/", userRouter);
+app.use("/user", userRouter);
+app.use("/docs", docsRouter);
 
 app.listen(process.env.PORT || 4000, () => {
     console.log("server on", `http://localhost:${process.env.PORT || 4000} `);
