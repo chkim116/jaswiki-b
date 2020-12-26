@@ -5,6 +5,7 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { UserType } from "../model/user";
+import { isContext } from "vm";
 dotenv.config();
 
 export const getLogin = async (
@@ -80,6 +81,37 @@ export const postRegister = async (
     }
 };
 
+const levelUp = [
+    {
+        level: 1,
+        contribute: 0,
+    },
+    {
+        level: 2,
+        contribute: 1000,
+    },
+    {
+        level: 3,
+        contribute: 2000,
+    },
+    {
+        level: 4,
+        contribute: 3000,
+    },
+    {
+        level: 5,
+        contribute: 4000,
+    },
+    {
+        level: 6,
+        contribute: 5000,
+    },
+    {
+        level: 7,
+        contribute: 6000,
+    },
+];
+
 export const getAuth = async (
     req: Request,
     res: Response,
@@ -107,6 +139,16 @@ export const getAuth = async (
                         .json("token과 맞는 유저가 없습니다.");
                 }
                 if (user) {
+                    const userLevelIcons = (contribute: number) => {
+                        const icon = levelUp.filter(
+                            (icon) => icon.contribute <= contribute
+                        );
+                        const level = icon[icon.length - 1].level;
+                        return level;
+                    };
+                    const userLevel = userLevelIcons(user.contribute);
+                    user.level = userLevel;
+                    user.save();
                     (req as any).token = token;
                     req.user = user;
                 }

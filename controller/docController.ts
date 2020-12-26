@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import Docs, { DocsType } from "../model/docs";
+import User, { UserType } from "../model/user";
 
 export const getDocs = async (req: Request, res: Response) => {
     try {
-        const docs = await Docs.find({}).sort({ _id: -1 });
+        const docs = await Docs.find({}).sort({ _id: -1 }).skip(10).limit(10);
         res.status(200).json(docs);
     } catch (err) {
         console.error(err);
@@ -14,7 +15,9 @@ export const getDocs = async (req: Request, res: Response) => {
 export const getDocById = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        const docs = await Docs.findById(id);
+        const docs = await Docs.findById(id)
+            .populate("contributer")
+            .populate("creator");
         res.status(200).json(docs);
     } catch (err) {
         console.error(err);
@@ -30,15 +33,16 @@ export const postDocs = async (req: Request, res: Response) => {
             secret: false,
             description: description,
             content: content,
-            stack: stack,
+            stack: [...stack],
             creator: creator,
-            createDate: new Date().toLocaleString(),
+            createDate: new Date().toLocaleDateString(),
             recentCreator: creator,
-            recentUpdate: new Date().toLocaleString(),
+            recentUpdate: new Date().toLocaleDateString(),
             contributer: [creator],
         });
-        (req as any).user.contribute += 100;
-        (req as any).user.save();
+        const user = (await User.findById(creator)) as UserType;
+        (user as any).contribute += 100;
+        user.save();
         res.status(200).json(doc._id);
     } catch (err) {
         console.error(err);
@@ -50,7 +54,7 @@ export const putDocs = async (req: Request, res: Response) => {
     const { title, description, content, stack, recentCreator } = req.body;
     const { id } = req.params;
     try {
-        const doc = await Docs.findOneAndUpdate(
+        const doc = await Docs.findByIdAndUpdate(
             { _id: id },
             {
                 title,
@@ -61,10 +65,11 @@ export const putDocs = async (req: Request, res: Response) => {
                 recentUpdate: new Date().toLocaleString(),
             }
         );
-        await doc?.contributer?.push(recentCreator._id);
-        (req as any).user.docs.push(id);
-        (req as any).user.contribute += 50;
-        (req as any).user.save();
+        await doc?.contributer?.push(recentCreator);
+        const user = (await User.findById(recentCreator)) as UserType;
+        (user as any).docs.push(id);
+        (user as any).contribute += 50;
+        user.save();
         res.status(200).json(id);
     } catch (err) {
         console.error(err);
@@ -75,7 +80,7 @@ export const putDocs = async (req: Request, res: Response) => {
 export const delDocs = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        await Docs.findOneAndDelete({ _id: id });
+        await Docs.findByIdAndDelete({ _id: id });
         res.status(200);
     } catch (err) {
         console.error(err);

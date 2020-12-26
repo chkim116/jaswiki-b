@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
     email: String,
     contribute: { type: Number, default: 0 },
-    level: { type: Number, default: 1, max: 6 },
+    level: { type: Number, default: 1, max: 7 },
     docs: [
         {
             type: mongoose.Schema.Types.ObjectId,

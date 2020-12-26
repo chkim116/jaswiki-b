@@ -22,16 +22,16 @@ const DocsSchema: Schema = new mongoose.Schema({
     stack: Array,
     creator: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref: "User",
     },
     recentCreator: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref: "User",
     },
     contributer: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "user",
+            ref: "User",
         },
     ],
     createDate: String,
