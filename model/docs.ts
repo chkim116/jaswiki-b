@@ -1,11 +1,25 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
-const DocsScheme = new mongoose.Schema({
+export interface DocsType extends Document {
+    _id?: string;
+    title: string;
+    description: string;
+    content: string;
+    stack: number[];
+    creator: string;
+    createDate: string;
+    recentCreator: string;
+    recentUpdate: string;
+    contributer?: string[];
+    secret?: boolean;
+}
+
+const DocsSchema: Schema = new mongoose.Schema({
     title: String,
-    secret: String,
+    secret: Boolean,
     description: String,
     content: String,
-    stack: [{ type: Number }],
+    stack: Array,
     creator: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
@@ -24,6 +38,6 @@ const DocsScheme = new mongoose.Schema({
     recentUpdate: String,
 });
 
-const model = mongoose.model("Docs", DocsScheme);
+const model = mongoose.model<DocsType>("Docs", DocsSchema);
 
 export default model;

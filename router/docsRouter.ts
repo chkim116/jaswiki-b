@@ -1,6 +1,7 @@
 import express from "express";
 import {
     delDocs,
+    getDocById,
     getDocs,
     postDocs,
     putDocs,
@@ -12,10 +13,12 @@ const docsRouter = express.Router();
 
 docsRouter.get("/", getDocs);
 
+docsRouter.get("/:id", getDocById);
+
 docsRouter.post("/post", postDocs);
 
-docsRouter.put("/put", putDocs);
+docsRouter.put("/put/:id", putDocs);
 
-docsRouter.delete("/del", delDocs);
+docsRouter.delete("/del/:id", delDocs);
 
 export default docsRouter;
