@@ -6,9 +6,6 @@ import docsRouter from "./router/docsRouter";
 import userRouter from "./router/userRouter";
 import passport from "passport";
 import "./passport";
-import mongoose from "mongoose";
-import mongoStore from "connect-mongo";
-import session from "express-session";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
@@ -21,7 +18,6 @@ class App {
 }
 
 const app = new App().application;
-const cookieStore = mongoStore(session);
 
 app.use(morgan("dev"));
 app.use(cookieParser());
@@ -33,16 +29,9 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(
-    session({
-        secret: process.env.COOKIE_SECRET as string,
-        resave: true,
-        saveUninitialized: false,
-        store: new cookieStore({ mongooseConnection: mongoose.connection }),
-    })
-);
 
 app.get("/", (req, res) => {
     res.send("반갑습니다");
