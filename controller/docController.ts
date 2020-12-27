@@ -4,7 +4,24 @@ import User, { UserType } from "../model/user";
 
 export const getDocs = async (req: Request, res: Response) => {
     try {
-        const docs = await Docs.find({}).sort({ _id: -1 }).skip(10).limit(10);
+        const docs = await Docs.find({}).sort({ _id: -1 }).limit(10);
+        res.status(200).json(docs);
+    } catch (err) {
+        console.error(err);
+        res.status(401);
+    }
+};
+
+export const searchDocs = async (req: Request, res: Response) => {
+    const { q } = req.query;
+    const text = q as string;
+    try {
+        const docs = await Docs.find({
+            description: { $regex: text, $options: "i" },
+        })
+            .populate("creator")
+            .sort({ _id: -1 });
+        console.log(docs);
         res.status(200).json(docs);
     } catch (err) {
         console.error(err);
@@ -42,6 +59,7 @@ export const postDocs = async (req: Request, res: Response) => {
         });
         const user = (await User.findById(creator)) as UserType;
         (user as any).contribute += 100;
+        (user as any).docs.push(doc._id);
         user.save();
         res.status(200).json(doc._id);
     } catch (err) {
@@ -51,7 +69,7 @@ export const postDocs = async (req: Request, res: Response) => {
 };
 
 export const putDocs = async (req: Request, res: Response) => {
-    const { title, description, content, stack, recentCreator } = req.body;
+    const { title, description, content, stack, creator } = req.body;
     const { id } = req.params;
     try {
         const doc = await Docs.findByIdAndUpdate(
@@ -61,12 +79,12 @@ export const putDocs = async (req: Request, res: Response) => {
                 description,
                 content,
                 stack,
-                recentCreator,
+                recentCreator: creator,
                 recentUpdate: new Date().toLocaleString(),
             }
         );
-        await doc?.contributer?.push(recentCreator);
-        const user = (await User.findById(recentCreator)) as UserType;
+        await doc?.contributer?.push(creator);
+        const user = (await User.findById(creator)) as UserType;
         (user as any).docs.push(id);
         (user as any).contribute += 50;
         user.save();

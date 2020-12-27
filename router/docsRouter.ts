@@ -5,6 +5,7 @@ import {
     getDocs,
     postDocs,
     putDocs,
+    searchDocs,
 } from "../controller/docController";
 
 const docsRouter = express.Router();
@@ -14,6 +15,8 @@ const docsRouter = express.Router();
 docsRouter.get("/", getDocs);
 
 docsRouter.get("/:id", getDocById);
+
+docsRouter.post("/search", searchDocs);
 
 docsRouter.post("/post", postDocs);
 
