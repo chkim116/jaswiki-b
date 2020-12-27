@@ -132,3 +132,15 @@ export const delDocs = async (req: Request, res: Response) => {
         res.status(401);
     }
 };
+
+export const postImg = (req: Request, res: Response) => {
+    const { file } = req;
+    const location = (file as any).location;
+    console.log(location);
+    try {
+        res.status(200).json(location);
+    } catch (err) {
+        console.log(err);
+        res.status(400).json(err.message);
+    }
+};

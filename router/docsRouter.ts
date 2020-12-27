@@ -4,9 +4,11 @@ import {
     getDocById,
     getDocs,
     postDocs,
+    postImg,
     putDocs,
     searchDocs,
 } from "../controller/docController";
+import { uploadImage } from "../multer";
 
 const docsRouter = express.Router();
 
@@ -23,5 +25,7 @@ docsRouter.post("/post", postDocs);
 docsRouter.put("/put/:id", putDocs);
 
 docsRouter.delete("/del/:router/:id", delDocs);
+
+docsRouter.post("/img", uploadImage, postImg);
 
 export default docsRouter;
