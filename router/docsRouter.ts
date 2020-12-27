@@ -22,6 +22,6 @@ docsRouter.post("/post", postDocs);
 
 docsRouter.put("/put/:id", putDocs);
 
-docsRouter.delete("/del/:id", delDocs);
+docsRouter.delete("/del/:router/:id", delDocs);
 
 export default docsRouter;

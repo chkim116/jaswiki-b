@@ -9,6 +9,7 @@ export interface UserType extends Document {
     level: number;
     contribute?: number;
     docs?: string[];
+    contriDocs?: string[];
 }
 
 const UserSchema = new mongoose.Schema({
@@ -20,7 +21,13 @@ const UserSchema = new mongoose.Schema({
     docs: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "docs",
+            ref: "Docs",
+        },
+    ],
+    contriDocs: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Docs",
         },
     ],
 });

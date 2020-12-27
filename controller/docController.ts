@@ -21,7 +21,6 @@ export const searchDocs = async (req: Request, res: Response) => {
         })
             .populate("creator")
             .sort({ _id: -1 });
-        console.log(docs);
         res.status(200).json(docs);
     } catch (err) {
         console.error(err);
@@ -34,7 +33,9 @@ export const getDocById = async (req: Request, res: Response) => {
     try {
         const docs = await Docs.findById(id)
             .populate("contributer")
-            .populate("creator");
+            .populate("creator")
+            .populate("recentCreator");
+
         res.status(200).json(docs);
     } catch (err) {
         console.error(err);
@@ -57,6 +58,8 @@ export const postDocs = async (req: Request, res: Response) => {
             recentUpdate: new Date().toLocaleDateString(),
             contributer: [creator],
         });
+
+        // 글 작성시 100점 추가
         const user = (await User.findById(creator)) as UserType;
         (user as any).contribute += 100;
         (user as any).docs.push(doc._id);
@@ -80,14 +83,29 @@ export const putDocs = async (req: Request, res: Response) => {
                 content,
                 stack,
                 recentCreator: creator,
-                recentUpdate: new Date().toLocaleString(),
+                recentUpdate: new Date().toLocaleDateString(),
             }
         );
-        await doc?.contributer?.push(creator);
+
+        // 기여자 목록에 업데이트한 자가 작성자가 아니고, 기여자 목록에도 포함되어 있지 않다면 업데이트
+        if (
+            !doc?.contributer?.includes(creator) &&
+            !doc?.creator.includes(creator)
+        ) {
+            await doc?.contributer?.push(creator);
+            (doc as DocsType).save();
+        }
+
         const user = (await User.findById(creator)) as UserType;
-        (user as any).docs.push(id);
-        (user as any).contribute += 50;
-        user.save();
+        const checkDocsInUser = user.docs?.includes(id as string);
+        const checkContriInUser = user.contriDocs?.includes(id as string);
+
+        // 만약 기여를 하지 않았고, 작성자도 아니라면 기여도 +50점
+        if (!checkDocsInUser && !checkContriInUser) {
+            (user as any).contriDocs.push(id);
+            (user as any).contribute += 50;
+            user.save();
+        }
         res.status(200).json(id);
     } catch (err) {
         console.error(err);
@@ -96,9 +114,18 @@ export const putDocs = async (req: Request, res: Response) => {
 };
 
 export const delDocs = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { router, id } = req.params;
     try {
-        await Docs.findByIdAndDelete({ _id: id });
+        await Docs.findByIdAndDelete({ _id: router });
+
+        const user = await User.findById(id);
+        const checkDocs = user?.docs?.includes(router);
+        if (checkDocs) {
+            const index = user?.docs?.indexOf(router) as number;
+            user?.docs?.splice(index, 1);
+            user?.save();
+        }
+
         res.status(200);
     } catch (err) {
         console.error(err);
