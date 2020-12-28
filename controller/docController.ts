@@ -4,8 +4,19 @@ import User, { UserType } from "../model/user";
 
 export const getDocs = async (req: Request, res: Response) => {
     try {
-        const docs = await Docs.find({}).sort({ _id: -1 }).limit(10);
+        const docs = await Docs.find({}).sort({ _id: -1 }).limit(20);
         res.status(200).json(docs);
+    } catch (err) {
+        console.error(err);
+        res.status(401);
+    }
+};
+
+export const getDocsByUser = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findById(id).populate("docs");
+        res.status(200).json(user);
     } catch (err) {
         console.error(err);
         res.status(401);

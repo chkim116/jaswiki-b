@@ -5,7 +5,6 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { UserType } from "../model/user";
-import { isContext } from "vm";
 dotenv.config();
 
 export const getLogin = async (

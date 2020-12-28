@@ -3,6 +3,7 @@ import {
     delDocs,
     getDocById,
     getDocs,
+    getDocsByUser,
     postDocs,
     postImg,
     putDocs,
@@ -17,6 +18,8 @@ const docsRouter = express.Router();
 docsRouter.get("/", getDocs);
 
 docsRouter.get("/:id", getDocById);
+
+docsRouter.get("/user/:id", getDocsByUser);
 
 docsRouter.post("/search", searchDocs);
 
