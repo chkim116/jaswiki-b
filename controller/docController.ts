@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Docs, { DocsType } from "../model/docs";
 import User, { UserType } from "../model/user";
+import mongoose from "mongoose";
 
 export const getDocs = async (req: Request, res: Response) => {
     try {
@@ -85,6 +86,7 @@ export const postDocs = async (req: Request, res: Response) => {
 export const putDocs = async (req: Request, res: Response) => {
     const { title, description, content, stack, creator } = req.body;
     const { id } = req.params;
+
     try {
         const doc = await Docs.findByIdAndUpdate(
             { _id: id },
@@ -93,16 +95,20 @@ export const putDocs = async (req: Request, res: Response) => {
                 description,
                 content,
                 stack,
-                recentCreator: creator,
+                recentCreator: creator
+                    ? creator
+                    : mongoose.Types.ObjectId("5fec21a5a66346e4f6fb44bc"),
                 recentUpdate: new Date().toLocaleDateString(),
             }
         );
 
-        // 기여자 목록에 업데이트한 자가 작성자가 아니고, 기여자 목록에도 포함되어 있지 않다면 업데이트
-        if (
-            !doc?.contributer?.includes(creator) &&
-            !doc?.creator.includes(creator)
-        ) {
+        if (creator === "") {
+            console.log(creator);
+            return res.status(200).json(id);
+        }
+
+        // 업데이트한 자가 작성자가 아니고, 기여자 목록에도 포함되어 있지 않는 유저라면 기여자 업데이트
+        if (!doc?.contributer?.includes(creator) && doc?.creator !== creator) {
             await doc?.contributer?.push(creator);
             (doc as DocsType).save();
         }
