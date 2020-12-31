@@ -29,7 +29,7 @@ app.use(
     cors({
         origin:
             process.env.NODE_ENV === "production"
-                ? "https://jaswiki.com"
+                ? ["https://jaswiki.com", "https://jaswiki.netlify.app"]
                 : "http://localhost:3000",
         credentials: true,
     })
