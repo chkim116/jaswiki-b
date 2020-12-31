@@ -6,6 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "nodemon --exec ts-node server.ts",
+        "dist": "cross-env NODE_ENV=production pm2 start dist/server.js",
         "build": "tsc"
     },
     "repository": {
@@ -18,6 +19,7 @@
     "dependencies": {
         "@types/bcrypt": "^3.0.0",
         "@types/cors": "^2.8.9",
+        "@types/hpp": "^0.2.1",
         "@types/jsonwebtoken": "^8.5.0",
         "@types/passport": "^1.0.4",
         "@types/passport-local-mongoose": "^4.0.13",
@@ -26,15 +28,18 @@
         "bcrypt": "^5.0.0",
         "cookie-parser": "^1.4.5",
         "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
-        "helmet": "^4.2.0",
+        "helmet": "^4.3.1",
+        "hpp": "^0.2.3",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.11.4",
         "morgan": "^1.10.0",
         "multer": "^1.4.2",
         "multer-s3": "^2.9.0",
         "passport": "^0.4.1",
+        "passport-kakao": "^1.0.0",
         "passport-local": "^1.0.0",
         "passport-local-mongoose": "^6.0.1"
     },
@@ -45,6 +50,7 @@
         "@types/multer": "^1.4.5",
         "@types/multer-s3": "^2.7.9",
         "@types/node": "^14.14.14",
+        "@types/passport-kakao": "^0.2.0",
         "nodemon": "^2.0.6",
         "ts-node": "^9.1.1",
         "typescript": "^4.1.3"
