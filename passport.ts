@@ -1,7 +1,7 @@
 import passport from "passport";
 import User from "./model/user";
 
-passport.use(User.createStrategy());
+passport.use((User as any).createStrategy());
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser((User as any).serializeUser());
+passport.deserializeUser((User as any).deserializeUser());

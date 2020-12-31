@@ -43,6 +43,6 @@ app.get("/", (req, res) => {
 app.use("/user", userRouter);
 app.use("/docs", docsRouter);
 
-app.listen(process.env.PORT || 4000, () => {
-    console.log("server on", `http://localhost:${process.env.PORT || 4000} `);
+app.listen(process.env.PORT, () => {
+    console.log("server on", `http://localhost:${process.env.PORT } `);
 });
