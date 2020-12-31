@@ -7,6 +7,18 @@ import dotenv from "dotenv";
 import { UserType } from "../model/user";
 dotenv.config();
 
+const option = (logout?: string) => {
+    const options: CookieOptions = {
+        maxAge: logout ? 1000 * 60 * 60 * 24 * 7 : 0,
+        domain: "jaswiki.netlify.app",
+        path: "/",
+        httpOnly: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    };
+    return options;
+};
+
 export const getLogin = async (
     req: Request,
     res: Response,
@@ -30,19 +42,9 @@ export const getLogin = async (
                     if (err) {
                         return res.status(400).json(err);
                     }
-                    const options: CookieOptions = {
-                        maxAge: 1000 * 60 * 60 * 24 * 7,
-                        domain: undefined,
-                        path: "/",
-                        httpOnly: process.env.NODE_ENV === "production",
-                        secure: process.env.NODE_ENV === "production",
-                        sameSite:
-                            process.env.NODE_ENV === "production"
-                                ? "none"
-                                : "lax",
-                    };
+
                     return res
-                        .cookie("x_auth", user.token, options)
+                        .cookie("x_auth", user.token, option())
                         .status(200)
                         .json({
                             _id: user._id,
@@ -180,5 +182,8 @@ export const sendUserData = async (req: Request, res: Response) => {
 
 export const logout = (req: Request, res: Response) => {
     (req as any).token = "";
-    return res.clearCookie("x_auth").status(200).json("clear!");
+    return res
+        .clearCookie("x_auth", option("logout"))
+        .status(200)
+        .json("clear!");
 };
