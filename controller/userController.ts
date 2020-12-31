@@ -7,9 +7,9 @@ import dotenv from "dotenv";
 import { UserType } from "../model/user";
 dotenv.config();
 
-const option = (logout?: string) => {
+const option = (login: boolean) => {
     const options: CookieOptions = {
-        maxAge: logout ? 1000 * 60 * 60 * 24 * 7 : 0,
+        maxAge: login ? 1000 * 60 * 60 * 24 * 7 : 0,
         domain: "jaswiki.netlify.app",
         path: "/",
         httpOnly: process.env.NODE_ENV === "production",
@@ -44,7 +44,7 @@ export const getLogin = async (
                     }
 
                     return res
-                        .cookie("x_auth", user.token, option())
+                        .cookie("x_auth", user.token, option(true))
                         .status(200)
                         .json({
                             _id: user._id,
@@ -182,8 +182,5 @@ export const sendUserData = async (req: Request, res: Response) => {
 
 export const logout = (req: Request, res: Response) => {
     (req as any).token = "";
-    return res
-        .clearCookie("x_auth", option("logout"))
-        .status(200)
-        .json("clear!");
+    return res.cookie("x_auth", "", option(false)).status(200).json("clear!");
 };
