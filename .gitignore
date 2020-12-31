@@ -1,3 +1,5 @@
 node_modules
 .env
 .npmignore
+jaswiki.pem
+yarn-error.log
