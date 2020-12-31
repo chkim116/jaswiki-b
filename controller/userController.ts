@@ -59,6 +59,14 @@ export const getLogin = async (
     })(req, res, next);
 };
 
+export const kakaoLogin = (req: Request, res: Response) =>
+    passport.authenticate("kakao");
+
+export const kakaoAuthCallback = (req: Request, res: Response) => {
+    passport.authenticate("kakao", () => console.log(req, res));
+    // users.authCallback
+};
+
 export const postRegister = async (
     req: Request,
     res: Response,
