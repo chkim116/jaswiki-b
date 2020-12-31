@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const KakaoStrategy = require("passport-kakao").Strategy;
 
-passport.use(User.createStrategy());
+passport.use((User as any).createStrategy());
 
 passport.use(
     new KakaoStrategy(
@@ -42,5 +42,5 @@ passport.use(
     )
 );
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser((User as any).serializeUser());
+passport.deserializeUser((User as any).deserializeUser());

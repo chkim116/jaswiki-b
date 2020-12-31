@@ -3,3 +3,4 @@ node_modules
 .npmignore
 jaswiki.pem
 yarn-error.log
+/dist
