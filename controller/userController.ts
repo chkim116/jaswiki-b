@@ -10,7 +10,7 @@ dotenv.config();
 const option = (login: boolean) => {
     const options: CookieOptions = {
         maxAge: login ? 1000 * 60 * 60 * 24 * 7 : 0,
-        domain: undefined,
+        domain: ".jaswiki.com",
         path: "/",
         httpOnly: process.env.NODE_ENV === "production",
         secure: process.env.NODE_ENV === "production",
@@ -160,7 +160,7 @@ export const getAuth = async (
                     const userLevel = userLevelIcons(user.contribute);
                     user.level = userLevel;
                     user.save();
-                    (req as any).token = token;
+                    (req.user as UserType).token = token;
                     req.user = user;
                 }
                 next();
@@ -177,6 +177,7 @@ export const sendUserData = async (req: Request, res: Response) => {
         contribute: (req.user as UserType).contribute,
         level: (req.user as UserType).level,
         docs: (req.user as UserType).docs,
+        token: (req.user as UserType).token,
     });
 };
 
