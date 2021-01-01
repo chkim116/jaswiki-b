@@ -47,6 +47,9 @@ app.get("/", (req, res) => {
 app.use("/user", userRouter);
 app.use("/docs", docsRouter);
 
-app.listen(process.env.PORT || 4000, () => {
-    console.log("server on", "https://jaswikib.ml");
-});
+app.listen(
+    process.env.NODE_ENV === "production" ? process.env.PORT : 4040,
+    () => {
+        console.log("server on", "https://jaswikib.ml");
+    }
+);
