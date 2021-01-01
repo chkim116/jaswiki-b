@@ -153,7 +153,6 @@ export const delDocs = async (req: Request, res: Response) => {
 export const postImg = (req: Request, res: Response) => {
     const { file } = req;
     const location = (file as any).location;
-    console.log(location);
     try {
         res.status(200).json(location);
     } catch (err) {
