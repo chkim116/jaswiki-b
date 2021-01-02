@@ -61,12 +61,17 @@ export const getLogin = async (
     })(req, res, next);
 };
 
-export const kakaoLogin = (req: Request, res: Response) =>
-    passport.authenticate("kakao");
-
 export const kakaoAuthCallback = (req: Request, res: Response) => {
-    passport.authenticate("kakao", () => console.log(req, res));
-    // users.authCallback
+    passport.authenticate("kakao", function (err, user) {
+        console.log("passport.authenticate(kakao)실행");
+        if (!user) {
+            return res.status(400).json("유저 없음");
+        }
+        req.logIn(user, function (err) {
+            console.log("kakao/oauth user : ", user);
+            return res.status(200).json(user);
+        });
+    })(req, res);
 };
 
 export const postRegister = async (
@@ -160,8 +165,8 @@ export const getAuth = async (
                     const userLevel = userLevelIcons(user.contribute);
                     user.level = userLevel;
                     user.save();
-                    (req.user as UserType).token = token;
                     req.user = user;
+                    (req.user as UserType).token = token;
                 }
                 next();
             });

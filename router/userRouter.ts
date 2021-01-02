@@ -3,7 +3,6 @@ import {
     getAuth,
     getLogin,
     kakaoAuthCallback,
-    kakaoLogin,
     logout,
     postRegister,
     sendUserData,
@@ -21,13 +20,6 @@ userRouter.get("/logout", logout);
 
 userRouter.get("/kakao", passport.authenticate("kakao"));
 
-userRouter.get(
-    "/kakao/oauth",
-    passport.authenticate("kakao", { failureRedirect: "/" }),
-    (req, res) => {
-        console.log(req);
-        res.redirect("/");
-    }
-);
+userRouter.get("/kakao/oauth", kakaoAuthCallback);
 
 export default userRouter;
