@@ -26,13 +26,13 @@ passport.use(
                 if (exUser) {
                     done(null, exUser);
                 } else {
-                    // const newUser = await User.create({
-                    //     email: profile._json.account_email,
-                    //     nick: profile.displayName,
-                    //     snsId: profile.id,
-                    //     provider: "kakao",
-                    // });
-                    // done(null, newUser);
+                    //     const newUser = await User.create({
+                    //         email: profile._json.account_email,
+                    //         userId: profile.displayName,
+                    //         snsId: profile.id,
+                    //     });
+                    //     done(null, newUser);
+                    //
                 }
             } catch (error) {
                 console.error(error);
