@@ -10,7 +10,7 @@ export interface UserType extends Document {
     contribute?: number;
     docs?: string[];
     contriDocs?: string[];
-    token?: string;
+    token?: string | any;
 }
 
 const UserSchema = new mongoose.Schema({

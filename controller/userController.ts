@@ -160,8 +160,8 @@ export const getAuth = async (
                     const userLevel = userLevelIcons(user.contribute);
                     user.level = userLevel;
                     user.save();
-                    (req.user as UserType).token = token;
-                    req.user = user;
+		    req.user = user;
+		    (req.user as UserType).token = token;
                 }
                 next();
             });
