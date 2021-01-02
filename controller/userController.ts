@@ -27,6 +27,7 @@ export const getLogin = async (
     passport.authenticate("local", (err, user, info) => {
         if (err) return next(err);
         if (!user) {
+            console.log(err, user, info);
             res.status(400).json("아이디나 비밀번호를 다시 입력해 주세요.");
         } else {
             req.logIn(user, (err) => {
@@ -59,19 +60,6 @@ export const getLogin = async (
             });
         }
     })(req, res, next);
-};
-
-export const kakaoAuthCallback = (req: Request, res: Response) => {
-    passport.authenticate("kakao", function (err, user) {
-        console.log("passport.authenticate(kakao)실행");
-        if (!user) {
-            return res.status(400).json("유저 없음");
-        }
-        req.logIn(user, function (err) {
-            console.log("kakao/oauth user : ", user);
-            return res.status(200).json(user);
-        });
-    })(req, res);
 };
 
 export const postRegister = async (
