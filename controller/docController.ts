@@ -3,6 +3,8 @@ import Docs, { DocsType } from "../model/docs";
 import User, { UserType } from "../model/user";
 import mongoose from "mongoose";
 
+const user = () => "userId level _id";
+
 export const getDocs = async (req: Request, res: Response) => {
     try {
         const docs = await Docs.find({}).sort({ _id: -1 }).limit(20);
@@ -31,7 +33,7 @@ export const searchDocs = async (req: Request, res: Response) => {
         const docs = await Docs.find({
             description: { $regex: text, $options: "i" },
         })
-            .populate("creator")
+            .populate("creator", user())
             .sort({ _id: -1 });
         res.status(200).json(docs);
     } catch (err) {
@@ -44,10 +46,9 @@ export const getDocById = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const docs = await Docs.findById(id)
-            .populate("contributer")
-            .populate("creator")
-            .populate("recentCreator");
-
+            .populate("contributer", user())
+            .populate("creator", user())
+            .populate("recentCreator", user());
         res.status(200).json(docs);
     } catch (err) {
         console.error(err);
@@ -56,11 +57,18 @@ export const getDocById = async (req: Request, res: Response) => {
 };
 
 export const postDocs = async (req: Request, res: Response) => {
-    const { title, description, content, stack, creator }: DocsType = req.body;
+    const {
+        title,
+        description,
+        content,
+        stack,
+        creator,
+        secret,
+    }: DocsType = req.body;
     try {
         const doc = await Docs.create({
             title: title,
-            secret: false,
+            secret,
             description: description,
             content: content,
             stack: [...stack],
@@ -84,7 +92,7 @@ export const postDocs = async (req: Request, res: Response) => {
 };
 
 export const putDocs = async (req: Request, res: Response) => {
-    const { title, description, content, stack, creator } = req.body;
+    const { title, description, content, stack, creator, secret } = req.body;
     const { id } = req.params;
 
     try {
@@ -95,6 +103,7 @@ export const putDocs = async (req: Request, res: Response) => {
                 description,
                 content,
                 stack,
+                secret,
                 recentCreator: creator
                     ? creator
                     : mongoose.Types.ObjectId("5fec21a5a66346e4f6fb44bc"),
@@ -103,7 +112,6 @@ export const putDocs = async (req: Request, res: Response) => {
         );
 
         if (creator === "") {
-            console.log(creator);
             return res.status(200).json(id);
         }
 

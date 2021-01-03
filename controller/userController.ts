@@ -10,7 +10,8 @@ dotenv.config();
 const option = (login: boolean) => {
     const options: CookieOptions = {
         maxAge: login ? 1000 * 60 * 60 * 24 * 7 : 0,
-        domain: ".jaswiki.com",
+        domain:
+            process.env.NODE_ENV === "production" ? ".jaswiki.com" : undefined,
         path: "/",
         httpOnly: process.env.NODE_ENV === "production",
         secure: process.env.NODE_ENV === "production",
