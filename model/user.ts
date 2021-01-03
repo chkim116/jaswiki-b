@@ -4,7 +4,7 @@ import passportLocalMongoose from "passport-local-mongoose";
 export interface UserType extends Document {
     _id?: string;
     userId: string;
-    password: string;
+    password?: string;
     email: string;
     level: number;
     contribute?: number;
